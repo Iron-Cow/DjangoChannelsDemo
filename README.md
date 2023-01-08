@@ -1,5 +1,15 @@
-Intro: 
-TODO:
+# Django chat demo
+
+## Intro: 
+Project will demonstrate multiuser chat option for django
+
+## Run project
+* Clone locally
+* `pip install -r requirements.txt` 
+* `cd mysite`
+* `python manage.py migrate`
+* `python manage.py runserver`
+* open `http://127.0.0.1:8000/` with multiple windows to test
 
 
 ## Build from scratch:
