@@ -81,3 +81,65 @@ application = ProtocolTypeRouter({
 * Run migrations `python manage.py migrate`
 * Rerun server and check console on the UI. connection_established message should be there
 
+---
+
+### Adding 2 sides communication to chat
+
+* Add form to `lobby.html`:
+```html
+    <form id="form">
+        <input type="text" name="message">
+    </form>
+```
+
+* Handle message sending from form in `<script>`::
+```javascript
+    let form = document.getElementById("form")
+    form.addEventListener("submit", (e)=> {
+        e.preventDefault()
+        let message = e.target.message.value
+        chatSocket.send(JSON.stringify({
+            "message": message
+        }))
+        form.reset()
+    })
+```
+
+* Add logic of message receiving to `ChatConsumer`:
+```python
+    def receive(self, text_data=None, bytes_data=None):
+        text_data_json = json.loads(text_data)
+        message = text_data_json["message"]
+
+        print(message)
+        self.send(text_data=json.dumps({
+            "type": "chat",
+            "message": message
+        }))
+```
+
+* Add element for holding chat in `lobby.html`:
+```html
+    <div id="messages"></div>
+```
+* And handle filling this element in script section:
+```js
+         chatSocket.onmessage = function (e){
+            console.log("I got message!!")
+            let data = JSON.parse(e.data)
+            console.log(data)
+            
+            // New code
+            if (data.type === "chat"){
+                let messages = document.getElementById("messages")
+                messages.insertAdjacentHTML("beforeend", `
+                    <div><p>${data.message}</p></div>
+                `)
+            }
+            // end New code
+        }
+```
+Now we have 2 sides communication with **single** client and server.
+
+---
+

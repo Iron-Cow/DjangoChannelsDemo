@@ -9,3 +9,13 @@ class ChatConsumer(WebsocketConsumer):
             "type": "connection_established",
             "message": "You are connected!"
         }))
+
+    def receive(self, text_data=None, bytes_data=None):
+        text_data_json = json.loads(text_data)
+        message = text_data_json["message"]
+
+        print(message)
+        self.send(text_data=json.dumps({
+            "type": "chat",
+            "message": message
+        }))
